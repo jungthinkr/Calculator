@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface ViewController : UIViewController
+#import <QuartzCore/QuartzCore.h>
+@interface ViewController : UIViewController <UITextFieldDelegate, UIGestureRecognizerDelegate,UITableViewDataSource,UITableViewDelegate>
 
 
 @end
