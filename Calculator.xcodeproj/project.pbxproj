@@ -15,6 +15,10 @@
 		2714C2E11C5881C000520192 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2714C2DF1C5881C000520192 /* LaunchScreen.storyboard */; };
 		2714C2EC1C5881C000520192 /* CalculatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2714C2EB1C5881C000520192 /* CalculatorTests.m */; };
 		2714C2F71C5881C000520192 /* CalculatorUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2714C2F61C5881C000520192 /* CalculatorUITests.m */; };
+		27C93D9F1C627A8200869E76 /* Action-tab-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 27C93D9E1C627A8200869E76 /* Action-tab-icon.png */; };
+		27C93DA11C627DF700869E76 /* something.png in Resources */ = {isa = PBXBuildFile; fileRef = 27C93DA01C627DF700869E76 /* something.png */; };
+		27C93DA31C62A61200869E76 /* 1063671-mw_powblock.gif in Resources */ = {isa = PBXBuildFile; fileRef = 27C93DA21C62A61200869E76 /* 1063671-mw_powblock.gif */; };
+		27C93DA51C62A67D00869E76 /* pow.png in Resources */ = {isa = PBXBuildFile; fileRef = 27C93DA41C62A67D00869E76 /* pow.png */; };
 		27ED358B1C591FE500BCDE10 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27ED358A1C591FE500BCDE10 /* QuartzCore.framework */; };
 		F45F50C070D51B1B0B1C96A2 /* libPods-Calculator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF03DC57D9392150DC4AE342 /* libPods-Calculator.a */; };
 /* End PBXBuildFile section */
@@ -53,6 +57,10 @@
 		2714C2F21C5881C000520192 /* CalculatorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CalculatorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2714C2F61C5881C000520192 /* CalculatorUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CalculatorUITests.m; sourceTree = "<group>"; };
 		2714C2F81C5881C000520192 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		27C93D9E1C627A8200869E76 /* Action-tab-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Action-tab-icon.png"; sourceTree = "<group>"; };
+		27C93DA01C627DF700869E76 /* something.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = something.png; sourceTree = "<group>"; };
+		27C93DA21C62A61200869E76 /* 1063671-mw_powblock.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "1063671-mw_powblock.gif"; sourceTree = "<group>"; };
+		27C93DA41C62A67D00869E76 /* pow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pow.png; sourceTree = "<group>"; };
 		27ED358A1C591FE500BCDE10 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		4DFD2B66545F42BA3846BAC3 /* Pods-Calculator.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Calculator.release.xcconfig"; path = "Pods/Target Support Files/Pods-Calculator/Pods-Calculator.release.xcconfig"; sourceTree = "<group>"; };
 		7EE68CF96ADE42D0B9795EE8 /* Pods-Calculator.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Calculator.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Calculator/Pods-Calculator.debug.xcconfig"; sourceTree = "<group>"; };
@@ -117,6 +125,10 @@
 				2714C2D71C5881C000520192 /* ViewController.h */,
 				2714C2D81C5881C000520192 /* ViewController.m */,
 				2714C2DA1C5881C000520192 /* Main.storyboard */,
+				27C93DA41C62A67D00869E76 /* pow.png */,
+				27C93DA21C62A61200869E76 /* 1063671-mw_powblock.gif */,
+				27C93DA01C627DF700869E76 /* something.png */,
+				27C93D9E1C627A8200869E76 /* Action-tab-icon.png */,
 				2714C2DD1C5881C000520192 /* Assets.xcassets */,
 				2714C2DF1C5881C000520192 /* LaunchScreen.storyboard */,
 				2714C2E21C5881C000520192 /* Info.plist */,
@@ -273,9 +285,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27C93DA31C62A61200869E76 /* 1063671-mw_powblock.gif in Resources */,
 				2714C2E11C5881C000520192 /* LaunchScreen.storyboard in Resources */,
 				2714C2DE1C5881C000520192 /* Assets.xcassets in Resources */,
+				27C93DA11C627DF700869E76 /* something.png in Resources */,
+				27C93D9F1C627A8200869E76 /* Action-tab-icon.png in Resources */,
 				2714C2DC1C5881C000520192 /* Main.storyboard in Resources */,
+				27C93DA51C62A67D00869E76 /* pow.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

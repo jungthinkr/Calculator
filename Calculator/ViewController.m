@@ -8,6 +8,8 @@
 //
 #import "ViewController.h"
 #import "pop/POP.h"
+#include <math.h>
+
 @interface ViewController ()
 {
     UIView* gradientView;
@@ -35,6 +37,8 @@
     __weak IBOutlet UITableView *History;
     __weak IBOutlet UIButton *showHistory;
     __weak IBOutlet UIButton *clearHistory;
+    __weak IBOutlet UIButton *power;
+    __weak IBOutlet UISegmentedControl *powButtons;
     BOOL parenthLogic;
     BOOL parenthFinish;
     BOOL error;
@@ -48,8 +52,6 @@
 
 @end
 
-// still an issue with decimal with parentheses
-// still an issue with parentheses
 @implementation ViewController
 
 - (void)viewDidLoad {
@@ -102,6 +104,10 @@
     parenth.layer.borderColor = [UIColor whiteColor].CGColor;
     clear.layer.borderColor = [UIColor whiteColor].CGColor;
 
+    //style show history button
+    //showHistory.layer.borderWidth = 2;
+    //showHistory.layer.borderColor = [UIColor whiteColor].CGColor;
+    //showHistory.layer.cornerRadius = 15;
     //initialize MISC
     parenthLogic = YES;
     parenthFinish = YES;
@@ -114,6 +120,9 @@
 
     parenthCount = 0;
 
+    powButtons.hidden = YES;
+    // make red faster
+
 
 }
 
@@ -123,13 +132,22 @@
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    
+    //NSLog(@"pow: %f", pow(8,2));
 
     if ([touch.view isKindOfClass:[UIButton class]])
     {
         if (touch.view != clearHistory &&
-            touch.view != showHistory)
+            touch.view != showHistory &&
+            touch.view != power)
         {
+            if (powButtons.hidden == NO)
+            {
+                powButtons.hidden = YES;
+                power.transform = CGAffineTransformMakeScale(1.0, 1.0);
+                power.hidden = NO;
+                showHistory.hidden=NO;
+            }
+            
         [self.view bringSubviewToFront:(UIButton*)touch.view];
         UIButton * button = (UIButton*)touch.view;
         // make blue animation
@@ -151,17 +169,16 @@
                 animSkinny.toValue = @1;
                 [button.layer pop_addAnimation:animWhite forKey:@"white"];
                 [button.titleLabel pop_addAnimation:fontWhite forKey:@"fontwhite"];
-                [button.layer pop_addAnimation:animSkinny forKey:@"skinny"];
+                //[button.layer pop_addAnimation:animSkinny forKey:@"skinny"];
             }
         }];
         [button.layer pop_addAnimation:animBlue forKey:@"blue"];
         [button.titleLabel pop_addAnimation:fontBlue forKey:@"fontblue"];
-        [button.layer pop_addAnimation:animFat forKey:@"fat"];
+        //[button.layer pop_addAnimation:animFat forKey:@"fat"];
         NSString* text = numberTextField.text;
         NSString* lastCharacter = [NSString stringWithFormat:@"%c",[text characterAtIndex:text.length-1]];
         
         if (touch.view == zero){
-            
             if ([lastCharacter isEqualToString:@"("])
             {
                 parenthLogic = NO;
@@ -499,59 +516,159 @@
 
         }
         else {
+            for (__strong UIView *subview in self.view.subviews)
+            {
+                if ([subview isKindOfClass:[UIButton class]])
+                {
+                    if (subview != showHistory &&
+                        subview != clearHistory){
+                        UIButton* temp = (UIButton*)subview;
+
+                       // [(UIButton*)subview.layer pop_removeAllAnimations];
+                        temp.layer.borderColor = [UIColor whiteColor].CGColor;
+                       // [(UIButton*)subview.titleLabel pop_removeAllAnimations];
+                        subview = temp;
+                    }
+                }
+            }
             text = [self compute: text];
             
-                
+            
                 if (error) // Make red animation
                 {
                     error = NO;
                     NSLog(@"error");
                 // make red animation
-                
-                POPBasicAnimation* animRed = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerBorderColor];
-                POPBasicAnimation* fontRed = [POPBasicAnimation animationWithPropertyNamed:kPOPLabelTextColor];
-                POPBasicAnimation* animFat = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerBorderWidth];
-                animRed.toValue = [UIColor redColor];
-                fontRed.toValue = [UIColor redColor];
-                animFat.toValue = @3;
-                
-                [animRed setCompletionBlock:^(POPAnimation *anim, BOOL finished) {
-                    if (finished)
                     {
+                        tapGesture.enabled = NO;
+                        POPBasicAnimation* animRed = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerBorderColor];
+                        POPBasicAnimation* fontRed = [POPBasicAnimation animationWithPropertyNamed:kPOPLabelTextColor];
+                        POPBasicAnimation* animFat = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerBorderWidth];
                         POPBasicAnimation* animWhite = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerBorderColor];
                         POPBasicAnimation* fontWhite = [POPBasicAnimation animationWithPropertyNamed:kPOPLabelTextColor];
                         POPBasicAnimation* animSkinny = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerBorderWidth];
+                        animRed.toValue = [UIColor redColor];
+                        fontRed.toValue = [UIColor redColor];
+                        animFat.toValue = @3;
                         animWhite.toValue = [UIColor whiteColor];
                         fontWhite.toValue = [UIColor whiteColor];
                         animSkinny.toValue = @1;
+                        [fontRed setCompletionBlock:^(POPAnimation *anim, BOOL finished) {
+                            if (finished)
+                            {
+                               
+                                for (__strong UIView *subview in self.view.subviews)
+                                {
+                                    if ([subview isKindOfClass:[UIButton class]])
+                                    {
+                                        if (subview != showHistory &&
+                                            subview != clearHistory){
+                                            UIButton* temp = (UIButton*)subview;
+                                            [temp.layer pop_addAnimation:animWhite forKey:@"white"];
+                                            [temp.titleLabel pop_addAnimation:fontWhite forKey:@"fontwhite"];
+                                            subview = temp;
+                                        }
+                                    }
+                                }
+                                
+                            }
+                        }];
+                        [fontWhite setCompletionBlock:^(POPAnimation *anim, BOOL finished) {
+                            if (finished)
+                            {
+                                tapGesture.enabled = YES;
+                            }
+                        }];
                         for (__strong UIView *subview in self.view.subviews)
                         {
                             if ([subview isKindOfClass:[UIButton class]])
                             {
-                                UIButton* temp = (UIButton*)subview;
-                                [temp.layer pop_addAnimation:animWhite forKey:@"white"];
-                                [temp.titleLabel pop_addAnimation:fontWhite forKey:@"fontwhite"];
-                                [temp.layer pop_addAnimation:animSkinny forKey:@"skinny"];
-                                subview = temp;
+                                if (subview != showHistory &&
+                                    subview != clearHistory){
+                                    UIButton* temp = (UIButton*)subview;
+                                    [temp.layer pop_removeAllAnimations];
+                                    [temp.titleLabel pop_removeAllAnimations];
+                                    [temp.layer pop_addAnimation:animRed forKey:@"red"];
+                                    [temp.titleLabel pop_addAnimation:fontRed forKey:@"fontred"];
+                                    // [temp.layer pop_addAnimation:animFat forKey:@"fat"];
+                                    
+                                    subview = temp;
+                                }
                             }
                         }
                         
                     }
-                }];
-                for (__strong UIView *subview in self.view.subviews)
-                {
-                    if ([subview isKindOfClass:[UIButton class]])
-                    {
-                        UIButton* temp = (UIButton*)subview;
-                        [temp.layer pop_addAnimation:animRed forKey:@"red"];
-                        [temp.titleLabel pop_addAnimation:fontRed forKey:@"fontred"];
-                        [temp.layer pop_addAnimation:animFat forKey:@"fat"];
-                        
-                        subview = temp;
-                    }
-                }
+                    
+
                 
             }
+                /*else
+                {
+                    error = NO;
+                    NSLog(@"No Error");
+                    // make blue animation
+                    tapGesture.enabled = NO;
+                    POPBasicAnimation* animBlue = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerBorderColor];
+                    POPBasicAnimation* fontBlue = [POPBasicAnimation animationWithPropertyNamed:kPOPLabelTextColor];
+                    POPBasicAnimation* animFat = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerBorderWidth];
+                    animBlue.toValue = [UIColor cyanColor];
+                    fontBlue.toValue = [UIColor cyanColor];
+                    animFat.toValue = @3;
+                    
+                    POPBasicAnimation* animWhite = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerBorderColor];
+                    POPBasicAnimation* fontWhite = [POPBasicAnimation animationWithPropertyNamed:kPOPLabelTextColor];
+                    POPBasicAnimation* animSkinny = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerBorderWidth];
+                    animWhite.toValue = [UIColor whiteColor];
+                    fontWhite.toValue = [UIColor whiteColor];
+                    animSkinny.toValue = @1;
+
+                    [fontBlue setCompletionBlock:^(POPAnimation *anim, BOOL finished) {
+                        if (finished)
+                        {
+                            
+                            for (__strong UIView *subview in self.view.subviews)
+                            {
+                                if ([subview isKindOfClass:[UIButton class]])
+                                {
+                                    if (subview != showHistory &&
+                                        subview != clearHistory){
+                                        UIButton* temp = (UIButton*)subview;
+                                        [temp.layer pop_addAnimation:animWhite forKey:@"white"];
+                                        [temp.titleLabel pop_addAnimation:fontWhite forKey:@"fontwhite"];
+                                        //[temp.layer pop_addAnimation:animSkinny forKey:@"skinny"];
+                                        subview = temp;
+                                    }
+                                }
+                            }
+                            
+                        }
+                    }];
+                    [fontWhite setCompletionBlock:^(POPAnimation *anim, BOOL finished) {
+                        if (finished)
+                        {
+                            tapGesture.enabled = YES;
+                        }
+                    }];
+                    
+                    for (__strong UIView *subview in self.view.subviews)
+                    {
+                        if ([subview isKindOfClass:[UIButton class]])
+                        {
+                            if (subview != showHistory &&
+                                subview != clearHistory){
+                                UIButton* temp = (UIButton*)subview;
+                                [temp.layer pop_removeAllAnimations];
+                                [temp.titleLabel pop_removeAllAnimations];
+                                [temp.layer pop_addAnimation:animBlue forKey:@"blue"];
+                                [temp.titleLabel pop_addAnimation:fontBlue forKey:@"fontblue"];
+                               // [temp.layer pop_addAnimation:animFat forKey:@"fat"];
+                                
+                                subview = temp;
+                            }
+                        }
+                    }
+                    
+                }*/
             
         }
         numberTextField.text = (NSString*)text;
@@ -562,29 +679,138 @@
                  [self.view bringSubviewToFront:History];
                  [self.view bringSubviewToFront:clearHistory];
                  NSLog(@"resultHIST:%@",resultHist);
-                 if ([showHistory.titleLabel.text isEqualToString:@"History"])
+                 power.enabled = NO;
+                 if ([showHistory.titleLabel.text isEqualToString:@"🕒"])
                  {
+
+                     //growUP.toValue = {600,400};
+                     
                      [History reloadData];
                      History.hidden = NO;
-                     clearHistory.hidden = NO;
-                     [showHistory setTitle:@"Hide" forState:UIControlStateNormal];
+                     
+                     tapGesture.enabled = NO;
+                     showHistory.enabled = NO;
+                     History.transform = CGAffineTransformMakeScale(0.1, 0.1);
+                     [UIView animateWithDuration: 0.7
+                                           delay: 0            // DELAY
+                          usingSpringWithDamping: 0.5
+                           initialSpringVelocity: 0.5
+                                         options:0
+                                      animations:^
+                      {
+                          History.transform = CGAffineTransformMakeScale(1, 1);
+                      }
+                                      completion:^(BOOL finished)
+                      {
+                          if (finished)
+                          {
+                              tapGesture.enabled = YES;
+                              showHistory.enabled =YES;
+                              clearHistory.hidden = NO;
+                              POPBasicAnimation *moveRight = [POPBasicAnimation animationWithPropertyNamed:kPOPViewCenter];
+                              
+                              moveRight.toValue=[NSValue valueWithCGPoint:CGPointMake(self.view.bounds.size.width/2, 180)];
+                              [clearHistory pop_addAnimation:moveRight forKey:@"move"];
+                          }
+                      }];
+
+                     [tapGesture setCancelsTouchesInView:NO];
+                     [showHistory setTitle:@"⌨" forState:UIControlStateNormal];
+                     
                  }
                  else
                  {
-                     History.hidden = YES;
+                     tapGesture.enabled = NO;
+                     showHistory.enabled = NO;
+                     [UIView animateWithDuration: 0.3
+                                           delay: 0            // DELAY
+                          usingSpringWithDamping: 1
+                           initialSpringVelocity: 0.5
+                                         options: 0
+                                      animations:^
+                      {
+                          History.transform = CGAffineTransformMakeScale(0.0005, 0.0005);
+                      }
+                                      completion:^(BOOL finished)
+                      {
+                          if (finished)
+                          {
+                              History.hidden = YES;
+                              tapGesture.enabled = YES;
+                              showHistory.enabled = YES;
+                              power.enabled = YES;
+                        }
+                      }];
                      clearHistory.hidden = YES;
-                     [showHistory setTitle:@"History" forState:UIControlStateNormal];
+
+                     [showHistory setTitle:@"🕒" forState:UIControlStateNormal];
+
                  }
             }
-             else{
+             else if (touch.view == clearHistory){
                  [resultHist removeAllObjects];
                  [expressionHist removeAllObjects];
                  [History reloadData];
              }
+            else if (touch.view == power)
+            {
+                //tapGesture.enabled = NO;
+                showHistory.hidden = YES;
+                
+                NSLog(@"hi");
+                [UIView animateWithDuration: 0.3
+                                      delay: 0            // DELAY
+                     usingSpringWithDamping: 1
+                      initialSpringVelocity: 0.5
+                                    options: 0
+                                 animations:^
+                 {
+                     power.transform = CGAffineTransformMakeScale(1, 0.0005);
+                 }
+                                 completion:^(BOOL finished)
+                 {
+                     if (finished)
+                     {
+                         powButtons.selected = NO;
+                         [powButtons setSelectedSegmentIndex:UISegmentedControlNoSegment];
+                         powButtons.hidden = NO;
+                         /*for (__strong UIView *subview in self.view.subviews)
+                         {
+                             if ([subview isKindOfClass:[UIButton class]])
+                             {
+                                 if (subview != showHistory &&
+                                     subview != clearHistory){
+                                     UIButton* temp = (UIButton*)subview;
+                                     temp.alpha = .5;
+                                     temp.enabled = NO;
+                                     
+                                     
+                                     subview = temp;
+                                 }
+                             }
+                         }*/
+
+                         POPBasicAnimation *moveLeft = [POPBasicAnimation animationWithPropertyNamed:kPOPViewFrame];
+                         
+                         moveLeft.toValue=[NSValue valueWithCGRect:
+                                            CGRectMake(([UIScreen mainScreen].bounds.size.width/2)-(powButtons.bounds.size.width/2),
+                                                150, powButtons.bounds.size.width, powButtons.bounds.size.height)];
+                         
+                         [powButtons pop_addAnimation:moveLeft forKey:@"move"];
+
+
+                     }
+                 }];
+
+            }
         }
         
         
     }
+    else if([touch.view isKindOfClass:[UISegmentedControl class]]){
+        powButtons.hidden = YES;
+    }
+    else{}
     
     return YES;
 }
@@ -592,23 +818,19 @@
 -(NSString*) compute:(NSString*)text
 {
     NSLog(@"text: %@", text);
+    NSString *express = text;
     text = [text stringByReplacingOccurrencesOfString:@"x" withString:@"*"];
-    text = [text stringByReplacingOccurrencesOfString:@"÷" withString:@"/"];
-    text = [text stringByReplacingOccurrencesOfString:@"÷" withString:@"/"];
-    if ([text rangeOfString:@"/0"].location != NSNotFound)
-        {
-            NSLog(@"divided by zero");
-            parenthLogic = YES;
-            error = YES;
-            return 0;
-        }
+    text = [text stringByReplacingOccurrencesOfString:@"÷" withString:@"/1.0/"];
+    NSLog(@"newtext: %@", text);
+
     // wrote my own parser
     // PEMDAS?
     NSExpression *expression;
     //Parenthesis
     NSInteger begincount = 0;
     NSInteger endcount = 0;
-    NSLog(@"text: %@", text);
+        
+   // text = floatText;
     for (NSInteger i = 0; i < text.length; ++i) // loop through every character in text
     {
         NSString* character = [NSString stringWithFormat:@"%c",[text characterAtIndex:i]];
@@ -651,16 +873,21 @@
                 numberResult = [left expressionValueWithObject:nil context:nil];
                 
                 NSString *stringResult = [numberResult stringValue];
-                if ([resultHist count] == 7)
+                if ([stringResult isEqualToString:@"inf"])
+                {
+                    error = YES;
+                    return 0;
+                }
+                if ([resultHist count] == 10)
                 {
                     [resultHist removeObjectAtIndex:0];
                 }
-                if ([expressionHist count] == 7)
+                if ([expressionHist count] == 10)
                 {
                     [expressionHist removeObjectAtIndex:0];
                 }
                 [resultHist addObject:stringResult];
-                [expressionHist addObject:text];
+                [expressionHist addObject:express];
                 return stringResult;
             }
     }
@@ -689,8 +916,8 @@
     return 0;
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     UIFont *myFont = [ UIFont fontWithName: @"Arial" size: 20.0 ];
     static NSString *MyIdentifier = @"MyReuseIdentifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
@@ -698,11 +925,85 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault  reuseIdentifier:MyIdentifier];
     }
 
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ = %@",[expressionHist objectAtIndex:indexPath.row], [resultHist objectAtIndex:indexPath.row]];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ = %@",[expressionHist objectAtIndex:[expressionHist count]-indexPath.row-1], [resultHist objectAtIndex:[resultHist count]-indexPath.row-1]];
     
     cell.textLabel.font  = myFont;
     return cell;
 }
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // here we get the cell from the selected row.
+    UITableViewCell *selectedCell=[tableView cellForRowAtIndexPath:indexPath];
+   
+    NSArray *getExpress = [selectedCell.textLabel.text componentsSeparatedByString:@" ="];
+    NSString *expression = [getExpress objectAtIndex:0];
+    expression = [expression stringByReplacingOccurrencesOfString:@"*" withString:@"x"];
+    expression = [expression stringByReplacingOccurrencesOfString:@"/" withString:@"÷"];
 
+    NSLog(@"expression: %@", expression);
+    numberTextField.text = expression;
+    tapGesture.enabled = NO;
+    showHistory.enabled = NO;
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [UIView animateWithDuration: 0.3
+                          delay: 0            // DELAY
+         usingSpringWithDamping: 1
+          initialSpringVelocity: 0.5
+                        options: 0
+                     animations:^
+     {
+         History.transform = CGAffineTransformMakeScale(0.0005, 0.0005);
+     }
+                     completion:^(BOOL finished)
+     {
+         if (finished)
+         {
+             History.hidden = YES;
+             showHistory.enabled = YES;
+             tapGesture.enabled = YES;
+        }
+     }];
+    clearHistory.hidden = YES;
+
+    [showHistory setTitle:@"🕒" forState:UIControlStateNormal];
+
+        // use the image in the next window using view controller instance of that view.
+}
+- (IBAction)decodeButton:(id)sender {
+    NSLog(@"segmented control tapped");
+    powButtons.hidden = YES;
+    showHistory.hidden = NO;
+    power.hidden = NO;
+    power.transform = CGAffineTransformMakeScale(1.0, 1.0);
+    for (__strong UIView *subview in self.view.subviews)
+    {
+        if ([subview isKindOfClass:[UIButton class]])
+        {
+            if (subview != showHistory &&
+                subview != clearHistory){
+                UIButton* temp = (UIButton*)subview;
+                temp.alpha = 1;
+                temp.enabled = YES;
+                // [temp.layer pop_addAnimation:animFat forKey:@"fat"];
+                
+                subview = temp;
+            }
+        }
+    }
+    
+    if (powButtons.selectedSegmentIndex == 0 )
+    {
+        NSLog(@"x^2");
+        numberTextField.text = [NSString stringWithFormat:@"%@%@",numberTextField.text,@"^"];
+    }
+    else if (powButtons.selectedSegmentIndex == 1)
+    {
+        NSLog(@"✓x");
+        numberTextField.text = [NSString stringWithFormat:@"%@%@",numberTextField.text,@"✓"];
+    }
+    else {}
+    
+}
+// 70, 250
 
 @end
